@@ -249,6 +249,8 @@ Community and support: <a href="https://discord.gg/XC4YsUBg2"><img alt="Discord"
 
 To contribute: join our Discord (use the badge above) to discuss ideas, coordinate work, ask questions, and get faster PR reviews.
 
+Signing up and completing the brief onboarding in the app is required for all contributors. Maintainers will use registered accounts and active sessions to verify changes; PRs may not be merged until this verification step is completed.
+
 ![Alt](https://repobeats.axiom.co/api/embed/241636b7674153b09f7a274fc31e67ceaf13859f.svg "Repobeats analytics image")
 
 <a href="https://github.com/HXQLabs/Helixque/graphs/contributors">
