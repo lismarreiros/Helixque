@@ -1,4 +1,4 @@
-# 📜 Code of Conduct
+![Helixque Code of Conduct](assets/code_of_conduct.png)
 
 ## Our Pledge
 We as contributors, maintainers, and members of the Helixque community pledge to make participation in our project and community a safe, respectful, and welcoming experience for everyone.  

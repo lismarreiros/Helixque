@@ -1,4 +1,4 @@
-# Helixque
+![Helixque Header](assets/header.png)
 
 Helixque is a professional real-time video chat application that pairs people based on their preferences. It uses WebRTC for secure, low-latency, peer-to-peer media and Socket.IO for reliable signaling—delivering a modern experience for networking, interviews, and collaboration.
 

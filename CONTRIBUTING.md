@@ -1,4 +1,4 @@
-# Contributing to Helixque
+![Helixque Contributing](assets/contributing_guidelines.png)
 
 Thank you for your interest in contributing to Helixque! This document provides guidelines for contributing to the project.
 
