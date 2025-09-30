@@ -7,6 +7,7 @@ Helixque is a professional real-time video chat application that pairs people ba
 ## Table of contents
 
 - [Overview](#overview)
+- [Features](#features)
 - [Frontend](#frontend)
 - [Backend](#backend)
 - [Quick start](#quick-start)
@@ -14,9 +15,9 @@ Helixque is a professional real-time video chat application that pairs people ba
 - [Socket.IO events](#socketio-events)
 - [Project structure](#project-structure)
 - [Core components](#core-components)
-- [Testing](#testing)
 - [Deployment](#deployment)
 - [Contribution guidelines](#contribution-guidelines)
+- [Contributers](#contributers)
 - [License & acknowledgments](#license--acknowledgments)
 
 ---
@@ -24,6 +25,24 @@ Helixque is a professional real-time video chat application that pairs people ba
 ## Overview
 
 Helixque provides preference-based pairing and a lightweight signaling server to facilitate direct WebRTC peer connections. The architecture separates responsibilities between a TypeScript backend (signaling, presence, matching) and a Next.js frontend (device setup, UI, and peer connection management).
+
+We’re continuously enhancing Helixque, evolving it into a dynamic platform. New features and improvements are on the way, and the best way to stay updated is by joining our [Discord](https://discord.gg/dQUh6SY9Uk) community, where you can engage in discussions and be part of the active development journey.
+
+---
+
+## Features
+
+**Enhanced UI & Layout** – enjoy a cleaner, smoother interface with improved stability when switching between users.
+
+**Seamless Media Switching** – toggle between video and audio effortlessly, with smooth transitions for uninterrupted conversations.
+
+**Instant Messaging** – send and receive messages in real time for seamless communication alongside video calls.
+
+**One-on-One Video Calling** – connect directly with other users for private, high-quality video conversations.
+
+**Random Connect with Professionals** – meet and network with professionals from various fields instantly, expanding your connections effortlessly.
+
+---
 
 ## Frontend
 
@@ -204,20 +223,6 @@ Helixque/
 - RoomManager (backend) — room lifecycle, signaling orchestration, cleanup
 - Room (frontend) — RTCPeerConnection lifecycle, media controls, UI state
 
-## Testing
-
-Run tests where present (no-op if none are configured):
-
-```bash
-# Backend
-cd backend
-npm test
-
-# Frontend
-cd ../frontend
-npm test
-```
-
 ## Deployment
 
 Backend (Render / Railway / Heroku)
@@ -245,11 +250,13 @@ Docker examples are included in the project to containerize frontend and backend
 - Use small, focused pull requests with descriptive titles and testing notes.
 - Maintain TypeScript types and follow existing code style. Run linters and formatters before committing.
 
-Community and support: <a href="https://discord.gg/XC4YsUBg2"><img alt="Discord" src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white"/></a> or open issues on GitHub.
+Community and support: <a href="https://discord.gg/dQUh6SY9Uk"><img alt="Discord" src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white"/></a> or open issues on GitHub.
 
 To contribute: join our Discord (use the badge above) to discuss ideas, coordinate work, ask questions, and get faster PR reviews.
 
 Signing up and completing the brief onboarding in the app is required for all contributors. Maintainers will use registered accounts and active sessions to verify changes; PRs may not be merged until this verification step is completed.
+
+## Contributers
 
 ![Alt](https://repobeats.axiom.co/api/embed/241636b7674153b09f7a274fc31e67ceaf13859f.svg "Repobeats analytics image")
 
