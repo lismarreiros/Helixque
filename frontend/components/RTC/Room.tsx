@@ -22,8 +22,7 @@ import {
 import { useRouter } from "next/navigation";
 import ChatPanel from "./Chat/chat"; // ← adjust path if different
 
-// const URL = process.env.BACKEND_URI;
-const URL = process.env.BACKEND_URI || "https://poc-v2-1.onrender.com";
+const URL = process.env.BACKEND_URI || "http://localhost:5001";
 
 export default function Room({
   name,
