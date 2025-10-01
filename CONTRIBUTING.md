@@ -16,7 +16,23 @@ Thank you for your interest in contributing to Helixque! This document provides 
 
 3. **Pull Request Policy on Discord**  
    - Before raising a PR, **check the `#pull-request` channel** to ensure there isn’t already an open PR for the same issue.  
-   - If no one is working on it, go ahead and raise your PR and mention it in the channel.  
+   - If no one is working on it, go ahead and raise your PR and mention it in the channel.
+  
+4. **sign up in helixque https://helixque.netlify.app/**
+
+---
+
+### Keeping Your Branch Up-to-Date
+
+Please ensure your local branch is **synced with the latest  `develop` branch** before making changes or opening a Pull Request (PR).  
+This helps avoid unnecessary merge conflicts and ensures a smooth review process.
+
+⚠️**Note**: Please raise PR's only to the 'develop' branch. If you want your PR to be merged quickly, then you must have a recording or a screenshot, depending on the issue, that shows the issue-fix.
+
+### Merge Conflicts
+
+- Project maintainers are **not responsible** if your PR is blocked due to merge conflicts.  
+- It is **your responsibility** to update your branch and resolve conflicts before requesting a merge.
 
 ---
 
