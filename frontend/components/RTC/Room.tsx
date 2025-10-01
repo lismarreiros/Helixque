@@ -11,7 +11,7 @@ import {
   IconPhoneOff,
   IconScreenShare,
   IconScreenShareOff,
-  IconPlayerSkipForward,
+  IconUserOff,
   IconRefresh,
   IconMessage,
   IconX,
@@ -1828,7 +1828,7 @@ const handleNext = () => {
               className="h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
               title="Next match"
             >
-              <IconPlayerSkipForward className="h-5 w-5" />
+              <IconUserOff className="h-5 w-5" />
             </button>
 
             <button
