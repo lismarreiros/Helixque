@@ -54,8 +54,12 @@ export default function Room({
   };
 
   const handleCancelTimeout = () => {
+    if (socketRef.current) {
+      socketRef.current.emit("queue:leave");
+    }
     setShowTimeoutAlert(false);
-    setStatus("Waiting to connect you to someone…");
+    setLobby(false);
+    setStatus("Search paused. Click Try Again to rejoin the queue.");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -1277,6 +1281,7 @@ export default function Room({
       s.off("renegotiate-answer");
       s.off("lobby");
       s.off("queue:waiting");
+      s.off("queue:timeout");
       s.off("partner:left");
       s.off("peer:media-state");
       s.off("media:mic");

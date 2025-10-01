@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { RoomManager } from "./RoomManager";
 
-const QUEUE_TIMEOUT_MS = 10 * 1000; // 10 seconds
+const QUEUE_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 export interface User {
   socket: Socket;
