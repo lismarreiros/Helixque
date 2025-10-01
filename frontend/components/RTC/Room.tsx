@@ -1739,6 +1739,7 @@ const handleNext = () => {
               name={name}
               mySocketId={mySocketId}
               collapsed={false}
+              isOpen={showChat}
             />
           </div>
         </div>
