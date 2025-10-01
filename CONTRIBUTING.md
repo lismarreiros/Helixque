@@ -20,6 +20,20 @@ Thank you for your interest in contributing to Helixque! This document provides 
 
 ---
 
+### Keeping Your Branch Up-to-Date
+
+Please ensure your local branch is **synced with the latest  `develop` branch** before making changes or opening a Pull Request (PR).  
+This helps avoid unnecessary merge conflicts and ensures a smooth review process.
+
+⚠️**Note**: Please raise PR's only to 'develop' branch
+
+### Merge Conflicts
+
+- Project maintainers are **not responsible** if your PR is blocked due to merge conflicts.  
+- It is **your responsibility** to update your branch and resolve conflicts before requesting a merge.
+
+---
+
 ## Getting Started
 
 1. Fork the repository
