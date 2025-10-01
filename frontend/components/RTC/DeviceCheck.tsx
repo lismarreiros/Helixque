@@ -60,11 +60,25 @@ export default function DeviceCheck() {
   }, [videoOn, audioOn]);
 
   if (joined) {
+
+    const handleOnLeave = () => {
+      setJoined(false);
+      try {
+        localAudioTrack?.stop();
+      } catch {}
+      try {
+        localVideoTrack?.stop();
+      } catch {}
+      setLocalAudioTrack(null);
+      setLocalVideoTrack(null);
+    };
+
     return (
       <Room
         name={name}
         localAudioTrack={localAudioTrack}
         localVideoTrack={localVideoTrack}
+        onLeave={handleOnLeave}
       />
     );
   }
