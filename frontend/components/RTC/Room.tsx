@@ -22,7 +22,6 @@ import {
 import { useRouter } from "next/navigation";
 import ChatPanel from "./Chat/chat"; // ← adjust path if different
 
-
 const URL = process.env.BACKEND_URI || "http://localhost:5001";
 
 export default function Room({
@@ -49,6 +48,31 @@ export default function Room({
 
   const [lobby, setLobby] = useState(true);
   const [status, setStatus] = useState<string>("Waiting to connect you to someone…");
+  const [showTimeoutAlert, setShowTimeoutAlert] = useState(false);
+  const [timeoutMessage, setTimeoutMessage] = useState("");
+
+  const handleRetryMatchmaking = () => {
+    if (socketRef.current) {
+      socketRef.current.emit("queue:retry");
+      setShowTimeoutAlert(false);
+      setStatus("Searching for the best match…");
+    }
+  };
+
+  const handleCancelTimeout = () => {
+    if (socketRef.current) {
+      socketRef.current.emit("queue:leave");
+    }
+    setShowTimeoutAlert(false);
+    setLobby(false);
+    setStatus("Search paused. Click Try Again to rejoin the queue.");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleCancelTimeout();
+    }
+  };
 
   // Initialize mic/cam states from props (DeviceCheck) when available.
   const [micOn, setMicOn] = useState<boolean>(typeof audioOn === "boolean" ? audioOn : true);
@@ -775,6 +799,7 @@ export default function Room({
     s.connect();
 
     s.on("connect", () => {
+      console.log("[FRONTEND] Socket connected to:", URL);
       setMySocketId(s.id ?? null);
       if (!joinedRef.current) {
         joinedRef.current = true;
@@ -1137,12 +1162,21 @@ export default function Room({
 
     // lobby / searching
     s.on("lobby", () => {
+      console.log("[FRONTEND] Received lobby event - user added to queue");
       setLobby(true);
       setStatus("Waiting to connect you to someone…");
     });
     s.on("queue:waiting", () => {
       setLobby(true);
       setStatus("Searching for the best match…");
+    });
+
+    s.on("queue:timeout", ({ message }: { message: string }) => {
+      console.log("[FRONTEND] Received queue:timeout event:", { message });
+      setTimeoutMessage(message);
+      setShowTimeoutAlert(true);
+      setLobby(true);
+      setStatus("No match found. Try again?");
     });
 
     // partner left
@@ -1254,6 +1288,7 @@ export default function Room({
       s.off("renegotiate-answer");
       s.off("lobby");
       s.off("queue:waiting");
+      s.off("queue:timeout");
       s.off("partner:left");
       s.off("peer:media-state");
       s.off("media:mic");
@@ -1798,6 +1833,48 @@ const handleNext = () => {
           </div>
         </div>
       </div>
+
+      {showTimeoutAlert && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" 
+          role="dialog" 
+          aria-modal="true" 
+          aria-labelledby="timeout-title"
+          onKeyDown={handleKeyDown}
+        >
+          <div className="mx-4 max-w-md rounded-2xl bg-neutral-900 border border-white/10 p-6 shadow-2xl">
+            <div className="text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-600/20">
+                <IconFlag className="h-6 w-6 text-orange-400" />
+              </div>
+              
+              <h3 id="timeout-title" className="mb-2 text-lg font-semibold text-white">
+                No Match Found
+              </h3>
+              
+              <p className="mb-6 text-sm text-neutral-400">
+                {timeoutMessage || "We couldn't find a match right now. Please try again later."}
+              </p>
+              
+              <div className="flex gap-3">
+                <button
+                  onClick={handleRetryMatchmaking}
+                  className="flex-1 rounded-xl bg-white text-black px-4 py-2 font-medium hover:bg-white/90 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+                  autoFocus
+                >
+                  Try Again
+                </button>
+                <button
+                  onClick={handleCancelTimeout}
+                  className="flex-1 rounded-xl border border-white/20 bg-transparent text-white px-4 py-2 font-medium hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
