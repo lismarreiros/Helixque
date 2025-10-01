@@ -27,7 +27,7 @@ Thank you for your interest in contributing to Helixque! This document provides 
 Please ensure your local branch is **synced with the latest  `develop` branch** before making changes or opening a Pull Request (PR).  
 This helps avoid unnecessary merge conflicts and ensures a smooth review process.
 
-⚠️**Note**: Please raise PR's only to 'develop' branch
+⚠️**Note**: Please raise PR's only to the 'develop' branch. If you want your PR to be merged quickly, then you must have a recording or a screenshot, depending on the issue, that shows the issue-fix.
 
 ### Merge Conflicts
 
