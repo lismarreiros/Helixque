@@ -10,7 +10,7 @@ Thank you for your interest in contributing to Helixque! This document provides 
    This helps the project grow and shows your support.  
 
 2. **Join our Discord server** for discussions, questions, and faster PR approvals:  
-   👉 [Join the Discord Server](https://discord.gg/UJfWXRYe)  
+   👉 [Join the Discord Server](https://discord.gg/dQUh6SY9Uk)
 
    ⚠️ Please note: To quickly get your PRs reviewed and merged, you must be a member of our Discord server.  
 
@@ -27,7 +27,13 @@ Thank you for your interest in contributing to Helixque! This document provides 
 Please ensure your local branch is **synced with the latest  `develop` branch** before making changes or opening a Pull Request (PR).  
 This helps avoid unnecessary merge conflicts and ensures a smooth review process.
 
-⚠️**Note**: Please raise PR's only to the 'develop' branch. If you want your PR to be merged quickly, then you must have a recording or a screenshot, depending on the issue, that shows the issue-fix.
+⚠️**Note**:
+- 🚀 Please raise PRs **only to the `develop` branch**.  
+- 📷 For faster reviews and merges, include a **recording or screenshot** (depending on the issue) that demonstrates the fix.  
+- 🏗️ Before opening a PR, run `npm run build` and ensure the project builds successfully **without errors**.  
+- ✅ Only raise a PR once the build passes.  
+- 🔗 When raising the PR, please **reference the issue number** it addresses.  
+
 
 ### Merge Conflicts
 
