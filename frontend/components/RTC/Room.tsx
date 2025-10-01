@@ -28,10 +28,16 @@ export default function Room({
   name,
   localAudioTrack,
   localVideoTrack,
+  audioOn,
+  videoOn,
+  onLeave,
 }: {
   name: string;
   localAudioTrack: MediaStreamTrack | null;
   localVideoTrack: MediaStreamTrack | null;
+  audioOn?: boolean;
+  videoOn?: boolean;
+  onLeave?: () => void;
 }) {
   const router = useRouter();
 
@@ -68,8 +74,9 @@ export default function Room({
     }
   };
 
-  const [micOn, setMicOn] = useState(true);
-  const [camOn, setCamOn] = useState(true);
+  // Initialize mic/cam states from props (DeviceCheck) when available.
+  const [micOn, setMicOn] = useState<boolean>(typeof audioOn === "boolean" ? audioOn : true);
+  const [camOn, setCamOn] = useState<boolean>(typeof videoOn === "boolean" ? videoOn : true);
   const [screenShareOn, setScreenShareOn] = useState(false);
 
   
@@ -1485,24 +1492,54 @@ const handleNext = () => {
 
   const handleLeave = () => {
     const s = socketRef.current;
+
     try {
+      // inform server we're leaving the queue/room
       s?.emit("queue:leave");
-    } catch {}
-    
+    } catch (e) {
+      // ignore
+    }
+
     // Stop screenshare if active
     if (screenShareOn) {
       if (currentScreenShareTrackRef.current) {
-        currentScreenShareTrackRef.current.stop();
+        try {
+          currentScreenShareTrackRef.current.stop();
+        } catch {}
       }
       if (localScreenShareStreamRef.current) {
-        localScreenShareStreamRef.current.getTracks().forEach(t => t.stop());
+        try {
+          localScreenShareStreamRef.current.getTracks().forEach(t => t.stop());
+        } catch {}
       }
     }
-    
+
+    // Teardown peers and local preview/tracks
     teardownPeers("teardown");
     stopProvidedTracks();
     detachLocalPreview();
-    router.push("/");
+
+    // Make sure socket is fully disconnected so server won't place us back
+    try {
+      s?.disconnect();
+    } catch {}
+    socketRef.current = null;
+
+    // Prefer redirecting to device check so user can rejoin or change devices.
+    // Use replace so the browser history doesn't keep the room entry.
+    try {
+      router.replace(`/match`);
+    } catch (e) {
+      // fallback to home
+      try {
+        router.replace(`/`);
+      } catch {}
+    }
+
+    // notify parent that we left so parent can unmount Room (clears `joined` in DeviceCheck)
+    try {
+      onLeave?.();
+    } catch {}
   };
 
   const handleRecheck = () => {
