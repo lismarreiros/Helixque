@@ -22,18 +22,22 @@ import {
 import { useRouter } from "next/navigation";
 import ChatPanel from "./Chat/chat"; // ← adjust path if different
 
-// const URL = process.env.BACKEND_URI;
-const URL = process.env.BACKEND_URI || "https://poc-v2-1.onrender.com";
+
+const URL = process.env.BACKEND_URI || "http://localhost:5001";
 
 export default function Room({
   name,
   localAudioTrack,
   localVideoTrack,
+  audioOn,
+  videoOn,
   onLeave,
 }: {
   name: string;
   localAudioTrack: MediaStreamTrack | null;
   localVideoTrack: MediaStreamTrack | null;
+  audioOn?: boolean;
+  videoOn?: boolean;
   onLeave?: () => void;
 }) {
   const router = useRouter();
@@ -46,8 +50,9 @@ export default function Room({
   const [lobby, setLobby] = useState(true);
   const [status, setStatus] = useState<string>("Waiting to connect you to someone…");
 
-  const [micOn, setMicOn] = useState(true);
-  const [camOn, setCamOn] = useState(true);
+  // Initialize mic/cam states from props (DeviceCheck) when available.
+  const [micOn, setMicOn] = useState<boolean>(typeof audioOn === "boolean" ? audioOn : true);
+  const [camOn, setCamOn] = useState<boolean>(typeof videoOn === "boolean" ? videoOn : true);
   const [screenShareOn, setScreenShareOn] = useState(false);
 
   

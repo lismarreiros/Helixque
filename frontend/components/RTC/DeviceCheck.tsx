@@ -78,6 +78,8 @@ export default function DeviceCheck() {
         name={name}
         localAudioTrack={localAudioTrack}
         localVideoTrack={localVideoTrack}
+        audioOn={audioOn}
+        videoOn={videoOn}
         onLeave={handleOnLeave}
       />
     );
