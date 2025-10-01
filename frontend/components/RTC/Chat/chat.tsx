@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import type { Socket } from "socket.io-client";
 
 type ChatMessage = {
@@ -79,10 +78,6 @@ export default function ChatPanel({
         const next = [...prev, { ...m, kind: "user" as const }];
         return next.length > MAX_BUFFER ? next.slice(-MAX_BUFFER) : next;
       });
-      // show a subtle toast for incoming messages
-      try {
-        toast(`${m.from}`, { description: m.text });
-      } catch {}
     };
 
     const onSystem = (m: { text: string; ts?: number }) => {
@@ -144,11 +139,6 @@ export default function ChatPanel({
     });
     socket!.emit("chat:message", payload);
     setInput("");
-    const sentText = input.trim().slice(0, MAX_LEN);
-    // toast confirmation for send
-    try {
-      toast.success("Message sent", { description: sentText });
-    } catch {}
     socket!.emit("chat:typing", { roomId, from: name, typing: false });
   };
 
