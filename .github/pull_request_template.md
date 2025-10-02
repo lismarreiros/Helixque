@@ -1,8 +1,10 @@
 ## 🌟 Pre-submission Checklist
 - [ ] ⭐ **I have starred the repository** (mandatory before contributing)
 - [ ] 💬 **I am a member of the Discord server**: [Join Here](https://discord.gg/UJfWXRYe)
+- [ ] 📝 **I have signed up at [helixque.netlify.app](https://helixque.netlify.app/)**  
 - [ ] 📢 **I have checked the `#pull-request` channel** to ensure no one else is working on this issue
 - [ ] 📝 **I have mentioned this PR in the Discord `#pull-request` channel**
+
 
 ## Summary
 Brief description of what this PR accomplishes.
