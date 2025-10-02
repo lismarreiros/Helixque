@@ -1854,23 +1854,26 @@ const handleNext = () => {
           {/* Right side controls - positioned within controls area */}
           <div className="absolute right-6">
             <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/50 px-2 py-1.5 backdrop-blur">
-              <button
-                onClick={() => setShowChat((v) => !v)}
-                className={`h-11 w-11 rounded-full flex items-center justify-center transition ${
-                  showChat ? "bg-indigo-600 hover:bg-indigo-500" : "bg-white/10 hover:bg-white/20"
-                }`}
-                title={showChat ? "Close chat" : "Open chat"}
-              >
-                <IconMessage className="h-5 w-5" />
-              </button>
+              <Tooltip content={showChat ? "Close chat" : "Open chat"} position="top">
+                <button
+                  onClick={() => setShowChat((v) => !v)}
+                  className={`h-11 w-11 rounded-full flex items-center justify-center transition ${
+                    showChat ? "bg-indigo-600 hover:bg-indigo-500" : "bg-white/10 hover:bg-white/20"
+                  }`}
+                >
+                  <IconMessage className="h-5 w-5" />
+                </button>
+              </Tooltip>
               
-              <button
-                onClick={() => handleReport()}
-                className="h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
-                title="Report user"
-              >
-                <IconFlag className="h-5 w-5" />
-              </button>
+              <Tooltip content="Report user" position="top">
+                <button
+                  onClick={() => handleReport()}
+                  className="h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
+                  title="Report user"
+                >
+                  <IconFlag className="h-5 w-5" />
+                </button>
+              </Tooltip>
             </div>
           </div>
         </div>
