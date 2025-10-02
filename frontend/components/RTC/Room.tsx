@@ -11,7 +11,7 @@ import {
   IconPhoneOff,
   IconScreenShare,
   IconScreenShareOff,
-  IconPlayerSkipForward,
+  IconUserOff,
   IconRefresh,
   IconMessage,
   IconX,
@@ -95,6 +95,7 @@ export default function Room({
 
   // socket/pc refs
   const socketRef = useRef<Socket | null>(null);
+  const peerIdRef = useRef<string | null>(null);
   const sendingPcRef = useRef<RTCPeerConnection | null>(null);
   const receivingPcRef = useRef<RTCPeerConnection | null>(null);
   const joinedRef = useRef(false);
@@ -955,6 +956,9 @@ export default function Room({
         }
       };
 
+      // record peer id if available on offer (for reporting)
+      peerIdRef.current = rid || peerIdRef.current;
+
       const offer = await pc.createOffer({
         offerToReceiveAudio: true,
         offerToReceiveVideo: true,
@@ -1054,6 +1058,9 @@ export default function Room({
 
       await pc.setRemoteDescription(new RTCSessionDescription(remoteSdp));
 
+  // capture peer id reference if provided
+  peerIdRef.current = rid || peerIdRef.current;
+
       ensureRemoteStream();
       pc.ontrack = (e) => {
         console.log("🎯 Answerer received track event!");
@@ -1124,6 +1131,12 @@ export default function Room({
       const pc = sendingPcRef.current;
       if (!pc) return;
       await pc.setRemoteDescription(new RTCSessionDescription(remoteSdp));
+    });
+
+    // Also capture any peer identifiers from media-state events
+    s.on("peer-media-state-change", ({ userId, from }: any) => {
+      if (userId) peerIdRef.current = userId;
+      else if (from) peerIdRef.current = from;
     });
 
     // trickle ICE
@@ -1547,6 +1560,24 @@ const handleNext = () => {
     setStatus("Rechecking…");
   };
 
+  const handleReport = (reason?: string) => {
+    const s = socketRef.current;
+    const reporter = mySocketId || s?.id || null;
+    const reported = peerIdRef.current || null;
+    try {
+      if (s && reporter) {
+        // client-side emit; server may or may not handle it depending on setup
+        s.emit("report", { reporterId: reporter, reportedId: reported, roomId, reason });
+        toast.success("Report submitted", { description: "Thank you. We received your report." });
+      } else {
+        toast.error("Report failed", { description: "Could not submit report (no socket)." });
+      }
+    } catch (e) {
+      console.error("report emit error", e);
+      try { toast.error("Report failed", { description: "An error occurred." }); } catch {}
+    }
+  };
+
   // --- UI -------------------------------------------------------------------
 
   return (
@@ -1743,6 +1774,7 @@ const handleNext = () => {
               name={name}
               mySocketId={mySocketId}
               collapsed={false}
+              isOpen={showChat}
             />
           </div>
         </div>
@@ -1796,7 +1828,7 @@ const handleNext = () => {
               className="h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
               title="Next match"
             >
-              <IconPlayerSkipForward className="h-5 w-5" />
+              <IconUserOff className="h-5 w-5" />
             </button>
 
             <button
@@ -1823,7 +1855,7 @@ const handleNext = () => {
               </button>
               
               <button
-                onClick={() => {/* Add report functionality */}}
+                onClick={() => handleReport()}
                 className="h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
                 title="Report user"
               >
