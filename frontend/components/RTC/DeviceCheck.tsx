@@ -138,7 +138,7 @@ export default function DeviceCheck() {
               <Tooltip content={audioOn ? "Turn off microphone" : "Turn on microphone"} position="bottom">
                 <button
                   onClick={() => setAudioOn((a) => !a)}
-                  className={`h-11 w-11 rounded-full flex items-center justify-center transition ${
+                  className={`cursor-pointer h-11 w-11 rounded-full flex items-center justify-center transition ${
                     audioOn ? "bg-white/10 hover:bg-white/20" : "bg-red-600 hover:bg-red-500"
                   }`}
                 >
@@ -149,7 +149,7 @@ export default function DeviceCheck() {
               <Tooltip content={videoOn ? "Turn off camera" : "Turn on camera"} position="bottom">
                 <button
                   onClick={() => setVideoOn((v) => !v)}
-                  className={`h-11 w-11 rounded-full flex items-center justify-center transition ${
+                  className={`cursor-pointer h-11 w-11 rounded-full flex items-center justify-center transition ${
                     videoOn ? "bg-white/10 hover:bg-white/20" : "bg-red-600 hover:bg-red-500"
                   }`}
                 >
@@ -160,7 +160,7 @@ export default function DeviceCheck() {
               <Tooltip content="Refresh devices" position="bottom">
                 <button
                   onClick={getCam}
-                  className="h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
+                  className="cursor-pointer h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
                 >
                   <IconRefresh className="h-5 w-5 text-white" />
                 </button>
@@ -190,7 +190,7 @@ export default function DeviceCheck() {
                 <button
                   onClick={() => setJoined(true)}
                   disabled={!name.trim()}
-                  className="w-full h-12 bg-white text-black rounded-xl font-medium hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 disabled:hover:bg-white"
+                  className="cursor-pointer w-full h-12 bg-white text-black rounded-xl font-medium hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 disabled:hover:bg-white"
                 >
                   Join Meeting
                 </button>

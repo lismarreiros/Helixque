@@ -204,7 +204,7 @@ export default function ChatPanel({
           <button
             onClick={sendMessage}
             disabled={!canSend || !input.trim()}
-            className="h-10 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-sm font-medium"
+            className="cursor-pointer h-10 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-sm font-medium"
           >
             Send
           </button>
