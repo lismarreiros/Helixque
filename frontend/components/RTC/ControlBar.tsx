@@ -52,7 +52,6 @@ export default function ControlBar({
             <button
               onClick={onRecheck}
               className="h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center cursor-pointer"
-              title="Recheck"
             >
               <IconRefresh className="h-5 w-5" />
             </button>
@@ -64,7 +63,6 @@ export default function ControlBar({
               className={`cursor-pointer h-11 w-11 rounded-full flex items-center justify-center transition ${
                 micOn ? "bg-white/10 hover:bg-white/20" : "bg-red-600 hover:bg-red-500"
               }`}
-              title={micOn ? "Turn off microphone" : "Turn on microphone"}
             >
               {micOn ? <IconMicrophone className="h-5 w-5" /> : <IconMicrophoneOff className="h-5 w-5" />}
             </button>
@@ -76,7 +74,6 @@ export default function ControlBar({
               className={`cursor-pointer h-11 w-11 rounded-full flex items-center justify-center transition ${
                 camOn ? "bg-white/10 hover:bg-white/20" : "bg-red-600 hover:bg-red-500"
               }`}
-              title={camOn ? "Turn off camera" : "Turn on camera"}
             >
               {camOn ? <IconVideo className="h-5 w-5" /> : <IconVideoOff className="h-5 w-5" />}
             </button>
@@ -88,7 +85,6 @@ export default function ControlBar({
               className={`cursor-pointer h-11 w-11 rounded-full flex items-center justify-center transition ${
                 screenShareOn ? "bg-blue-600 hover:bg-blue-500" : "bg-white/10 hover:bg-white/20"
               }`}
-              title={screenShareOn ? "Stop screen share" : "Start screen share"}
             >
               {screenShareOn ? <IconScreenShareOff className="h-5 w-5" /> : <IconScreenShare className="h-5 w-5" />}
             </button>
@@ -98,7 +94,6 @@ export default function ControlBar({
             <button
               onClick={onNext}
               className="cursor-pointer h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
-              title="Next match"
             >
               <IconUserOff className="h-5 w-5" />
             </button>
@@ -108,7 +103,6 @@ export default function ControlBar({
             <button
               onClick={onLeave}
               className="cursor-pointer ml-1 mr-1 h-11 rounded-full bg-red-600 px-6 hover:bg-red-500 flex items-center justify-center gap-2"
-              title="Leave call"
             >
               <IconPhoneOff className="h-5 w-5" />
               <span className="hidden sm:inline text-sm font-medium">Leave</span>
@@ -125,7 +119,6 @@ export default function ControlBar({
                 className={`cursor-pointer h-11 w-11 rounded-full flex items-center justify-center transition ${
                   showChat ? "bg-indigo-600 hover:bg-indigo-500" : "bg-white/10 hover:bg-white/20"
                 }`}
-                title={showChat ? "Close chat" : "Open chat"}
               >
                 <IconMessage className="h-5 w-5" />
               </button>
@@ -135,7 +128,6 @@ export default function ControlBar({
               <button
                 onClick={onReport}
                 className="cursor-pointer h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center"
-                title="Report user"
               >
                 <IconFlag className="h-5 w-5" />
               </button>
