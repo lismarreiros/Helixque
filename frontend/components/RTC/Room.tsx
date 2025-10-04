@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import ChatPanel from "./Chat/chat";
+import ChatPanel from "./Chat/chat"; // ← adjust path if different
 import VideoGrid from "./VideoGrid";
 import ControlBar from "./ControlBar";
 import TimeoutAlert from "./TimeoutAlert";
