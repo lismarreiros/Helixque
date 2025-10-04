@@ -109,6 +109,9 @@ export default function ChatPanel({
 
     const onSystem = (m: { text: string; ts?: number }) => {
       setMessages((prev) => {
+        // simple de-dupe: if last system message has identical text, skip
+        const last = prev[prev.length - 1];
+        if (last?.kind === "system" && last.text === m.text) return prev;
         const next = [
           ...prev,
           { text: m.text, from: "system", clientId: "system", ts: m.ts ?? Date.now(), kind: "system" as const },
@@ -125,15 +128,15 @@ export default function ChatPanel({
       }
     };
 
-    const onPartnerLeft = ({ reason }: { reason: string }) => {
-      onSystem({ text: `Your partner left (${reason}).` });
-    };
+ //   const onPartnerLeft = ({ reason }: { reason: string }) => {
+  //    onSystem({ text: `Your partner left (${reason}).` });
+  //  };
 
     socket.on("connect", onConnect);
     socket.on("chat:message", onMsg);
     socket.on("chat:system", onSystem);
     socket.on("chat:typing", onTyping);
-    socket.on("partner:left", onPartnerLeft);
+ //   socket.on("partner:left", onPartnerLeft);
 
     // optional: clear chat when switching rooms
     setMessages([]);
@@ -143,9 +146,11 @@ export default function ChatPanel({
       socket.off("chat:message", onMsg);
       socket.off("chat:system", onSystem);
       socket.off("chat:typing", onTyping);
-      socket.off("partner:left", onPartnerLeft);
+ //     socket.off("partner:left", onPartnerLeft);
       // stop typing when leaving room/unmounting
       socket.emit("chat:typing", { roomId, from: name, typing: false });
+      // announce leaving the chat room
+      socket.emit("chat:leave", { roomId, name });
     };
   }, [socket, roomId, name, mySocketId]);
 

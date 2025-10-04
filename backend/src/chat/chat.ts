@@ -5,8 +5,18 @@ import type { Server, Socket } from "socket.io";
 export function joinChatRoom(socket: Socket, roomId: string, name: string) {
   if (!roomId) return;
   const room = `chat:${roomId}`;
+  const alreadyInRoom = socket.rooms.has(room);
   socket.join(room);
-  socket.nsp.in(room).emit("chat:system", { text: `${name} joined the chat`, ts: Date.now() });
+
+  // remember display name for this room (used for leave announcements)
+  const data = (socket.data as any) || ((socket as any).data = {});
+  data.chatNames = data.chatNames || {};
+  data.chatNames[room] = name;
+
+  // only announce join once per socket per room
+  if (!alreadyInRoom) {
+    socket.nsp.in(room).emit("chat:system", { text: `${name} joined the chat`, ts: Date.now() });
+  }
 }
 
 export function wireChat(io: Server, socket: Socket) {
@@ -39,5 +49,28 @@ export function wireChat(io: Server, socket: Socket) {
   socket.on("chat:typing", ({ roomId, from, typing }: { roomId: string; from: string; typing: boolean }) => {
     if (!roomId) return;
     socket.to(`chat:${roomId}`).emit("chat:typing", { from, typing });
+  });
+
+  // Explicit leave (e.g., navigating away or switching rooms)
+  socket.on("chat:leave", ({ roomId, name }: { roomId: string; name: string }) => {
+    if (!roomId) return;
+    const room = `chat:${roomId}`;
+    if (socket.rooms.has(room)) {
+      socket.leave(room);
+      socket.nsp.in(room).emit("chat:system", { text: `${name} left the chat`, ts: Date.now() });
+    }
+    const data = (socket.data as any) || ((socket as any).data = {});
+    if (data.chatNames) delete data.chatNames[room];
+  });
+
+  // Announce leave on disconnect across all chat rooms this socket was part of
+  socket.on("disconnecting", () => {
+    const data = (socket.data as any) || {};
+    for (const room of socket.rooms) {
+      if (typeof room === "string" && room.startsWith("chat:")) {
+        const displayName = data.chatNames?.[room] ?? "A user";
+        socket.nsp.in(room).emit("chat:system", { text: `${displayName} left the chat`, ts: Date.now() });
+      }
+    }
   });
 }
