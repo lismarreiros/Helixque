@@ -108,13 +108,29 @@ export default function ChatPanel({
     };
 
     const onSystem = (m: { text: string; ts?: number }) => {
+      // normalize system text: keep my own name, anonymize peers as "peer"
+      const normalize = (txt: string) => {
+        try {
+          const re = /^(.*)\s+(joined|left) the chat.*$/;
+          const match = txt.match(re);
+          if (match) {
+            const who = (match[1] || "").trim();
+            const action = match[2];
+            const isSelf = who.length > 0 && who.toLowerCase() === (name || "").toLowerCase();
+            return `${isSelf ? name : "peer"} ${action} the chat`;
+          }
+        } catch {}
+        return txt;
+      };
+      const text = normalize(m.text);
+
       setMessages((prev) => {
         // simple de-dupe: if last system message has identical text, skip
         const last = prev[prev.length - 1];
-        if (last?.kind === "system" && last.text === m.text) return prev;
+        if (last?.kind === "system" && last.text === text) return prev;
         const next = [
           ...prev,
-          { text: m.text, from: "system", clientId: "system", ts: m.ts ?? Date.now(), kind: "system" as const },
+          { text, from: "system", clientId: "system", ts: m.ts ?? Date.now(), kind: "system" as const },
         ];
         return next.length > MAX_BUFFER ? next.slice(-MAX_BUFFER) : next;
       });
