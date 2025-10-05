@@ -42,3 +42,6 @@ Add any other context or screenshots about the feature request here.
 > Thank you for helping shape **HelixQue’s future** this **Hacktoberfest 🙌**
 
 
+## Note
+You can now preview the latest updates and improvements every 2–3 days at the following link:
+👉 [Helixque-Changes](https://helixque-changes.netlify.app/)
