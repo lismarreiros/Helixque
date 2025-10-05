@@ -5,6 +5,11 @@ title: "[Enhancement]: "
 labels: ["enhancement", "hacktoberfest", "pending verification"]
 ---
 
+---
+## Note
+You can now preview the latest updates and improvements every 2–3 days at the following link:
+👉 [Helixque-Changes](https://helixque-changes.netlify.app/)
+---
 
 **Describe the enhancement**  
 What improvement are you proposing? Share architectural, code, or performance details.
