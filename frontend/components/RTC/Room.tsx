@@ -584,6 +584,7 @@ export default function Room({
       setStatus("Connecting…");
       
       toast.success("Connected!", {
+        id: "connected-toast", // Single unique ID for connection toast
         description: "You've been connected to someone"
       });
 
@@ -606,6 +607,7 @@ export default function Room({
       setStatus("Connecting…");
       
       toast.success("Connected!", {
+        id: "connected-toast", // Single unique ID for connection toast
         description: "You've been connected to someone"
       });
 
