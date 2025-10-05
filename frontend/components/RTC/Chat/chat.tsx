@@ -73,7 +73,7 @@ export default function ChatPanel({
     if (!socket || !roomId) return;
 
     const join = () => socket.emit("chat:join", { roomId, name });
-    join(); // initial
+    // initial join will be emitted after listeners are attached
     const onConnect = () => {
       // re-join on reconnect
       sidRef.current = socket.id ?? null;
@@ -138,8 +138,11 @@ export default function ChatPanel({
     socket.on("chat:typing", onTyping);
  //   socket.on("partner:left", onPartnerLeft);
 
-    // optional: clear chat when switching rooms
+    // clear chat when switching rooms BEFORE join to avoid wiping fresh system events
     setMessages([]);
+
+    // now that listeners are wired, perform initial join
+    join(); // initial
 
     return () => {
       socket.off("connect", onConnect);
@@ -152,7 +155,7 @@ export default function ChatPanel({
       // announce leaving the chat room
       socket.emit("chat:leave", { roomId, name });
     };
-  }, [socket, roomId, name, mySocketId]);
+  }, [socket, roomId]);
 
   const sendMessage = () => {
     if (!canSend || !input.trim()) return;

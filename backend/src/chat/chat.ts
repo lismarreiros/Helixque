@@ -2,7 +2,7 @@
 import type { Server, Socket } from "socket.io";
 
 /** Join the socket to the chat room and announce */
-export function joinChatRoom(socket: Socket, roomId: string, name: string) {
+export async function joinChatRoom(socket: Socket, roomId: string, name: string) {
   if (!roomId) return;
   const room = `chat:${roomId}`;
   const alreadyInRoom = socket.rooms.has(room);
@@ -15,14 +15,28 @@ export function joinChatRoom(socket: Socket, roomId: string, name: string) {
 
   // only announce join once per socket per room
   if (!alreadyInRoom) {
-    socket.nsp.in(room).emit("chat:system", { text: `${name} joined the chat`, ts: Date.now() });
+    // inform the joining socket about existing peers already in the room
+    try {
+      const peers = await socket.nsp.in(room).fetchSockets();
+      for (const peer of peers) {
+        if (peer.id === socket.id) continue; // skip self
+        const peerName = (peer as any).data?.chatNames?.[room] ?? "A user";
+        socket.emit("chat:system", { text: `${peerName} joined the chat`, ts: Date.now() });
+      }
+    } catch {}
+
+    // show the join message to the joining user
+    socket.emit("chat:system", { text: `${name} joined the chat`, ts: Date.now() });
+
+    // broadcast the join to everyone else in the room
+    socket.to(room).emit("chat:system", { text: `${name} joined the chat`, ts: Date.now() });
   }
 }
 
 export function wireChat(io: Server, socket: Socket) {
   // Allows explicit joins (reconnects/late-joins)
-  socket.on("chat:join", ({ roomId, name }: { roomId: string; name: string }) => {
-    joinChatRoom(socket, roomId, name);
+  socket.on("chat:join", async ({ roomId, name }: { roomId: string; name: string }) => {
+    await joinChatRoom(socket, roomId, name);
   });
 
   // Broadcast a message to everyone in the chat room
