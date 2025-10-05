@@ -5,6 +5,11 @@ title: "[Feature]: "
 labels: ["enhancement", "hacktoberfest", "pending verification"]
 ---
 
+---
+## Note
+You can now preview the latest updates and improvements every 2–3 days at the following link:
+👉 [Helixque-Changes](https://helixque-changes.netlify.app/)
+---
 
 **Describe the feature you'd like**  
 A clear and concise description of the feature you want added.
