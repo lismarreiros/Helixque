@@ -294,3 +294,10 @@ Thanks to the open-source projects that made Helixque possible:
 - [React](https://react.dev/) - UI library
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
+
+<br />
+### Note
+
+You can now preview the latest updates and improvements every 2–3 days at the following link:
+👉 https://helixque-changes.netlify.app/
+
