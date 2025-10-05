@@ -26,6 +26,11 @@ Meet [Helixque](https://github.com/HXQLabs/Helixque), a professional real-time v
 
 > Helixque is continuously evolving. Your suggestions, ideas, and reported bugs help us immensely. Do not hesitate to join the conversation on [Discord](https://discord.gg/dQUh6SY9Uk) or raise a GitHub issue. We read everything and respond to most.
 
+
+## Note
+You can now preview the latest updates and improvements every 2–3 days at the following link:
+👉 [Helixque-Changes](https://helixque-changes.netlify.app/)
+
 ## 🚀 Quick Start
 
 Getting started with Helixque is simple:
@@ -296,8 +301,5 @@ Thanks to the open-source projects that made Helixque possible:
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
 
 <br />
-### Note
 
-You can now preview the latest updates and improvements every 2–3 days at the following link:
-👉 https://helixque-changes.netlify.app/
 
