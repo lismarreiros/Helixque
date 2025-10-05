@@ -702,8 +702,9 @@ export default function Room({
     });
 
     s.on("partner:left", () => {
-      console.log("👋 PARTNER LEFT");
+      console.log("👋 PARTNER LEFT - Event received");
       toast.warning("Partner Left", {
+        id: "partner-left-toast", // Add unique ID to prevent duplicates
         description: "Your partner has left the call"
       });
       

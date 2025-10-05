@@ -126,6 +126,7 @@ export default function ChatPanel({
     };
 
     const onPartnerLeft = ({ reason }: { reason: string }) => {
+      console.log("👋 PARTNER LEFT - Chat event received with reason:", reason);
       onSystem({ text: `Your partner left (${reason}).` });
     };
 

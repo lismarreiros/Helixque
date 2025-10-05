@@ -228,7 +228,9 @@ export class UserManager {
 
   // Unified leave handler. If a user leaves, partner is requeued + notified.
   private handleLeave(leaverId: string, reason: string = "leave") {
+    console.log(`[USERMANAGER] handleLeave called for ${leaverId} with reason: ${reason}`);
     const partnerId = this.partnerOf.get(leaverId);
+    console.log(`[USERMANAGER] Partner ID: ${partnerId}`);
 
     // always remove leaver from queue
     this.queue = this.queue.filter((x) => x !== leaverId);
@@ -261,14 +263,20 @@ export class UserManager {
       // keep partner waiting: requeue + notify + try match now
       const partnerUser = this.users.find((u) => u.socket.id === partnerId);
       if (partnerUser && this.online.has(partnerId)) {
+        console.log(`[USERMANAGER] Emitting partner:left event to ${partnerId} with reason: ${reason}`);
         partnerUser.socket.emit("partner:left", { reason });
         if (!this.queue.includes(partnerId)) this.queue.push(partnerId);
         this.tryMatchFor(partnerId);
+      } else {
+        console.log(`[USERMANAGER] Not emitting partner:left event - partnerUser: ${!!partnerUser}, online: ${this.online.has(partnerId)}`);
       }
+    } else {
+      console.log(`[USERMANAGER] No partner found for ${leaverId}`);
     }
   }
 
   private onNext(userId: string) {
+    console.log(`[USERMANAGER] onNext called for ${userId}`);
     const partnerId = this.partnerOf.get(userId);
     if (!partnerId) {
       // user is not currently paired; just ensure they are queued
@@ -298,6 +306,7 @@ export class UserManager {
     if (!this.queue.includes(userId)) this.queue.push(userId);
     const partnerUser = this.users.find((u) => u.socket.id === partnerId);
     if (partnerUser && this.online.has(partnerId)) {
+      console.log(`[USERMANAGER] Emitting partner:left event to ${partnerId} with reason: next`);
       partnerUser.socket.emit("partner:left", { reason: "next" });
       // Optional: also requeue partner automatically
       if (!this.queue.includes(partnerId)) this.queue.push(partnerId);

@@ -52,22 +52,30 @@ export class RoomManager {
 
     // NEW: teardown helpers for robust leave/next flows
     teardownUser(roomId: string, userId: string) {
+        console.log(`[ROOMMANAGER] teardownUser called for roomId: ${roomId}, userId: ${userId}`);
         const room = this.rooms.get(roomId);
-        if (!room) return;
+        if (!room) {
+          console.log(`[ROOMMANAGER] Room not found for roomId: ${roomId}`);
+          return;
+        }
 
         const other = room.user1.socket.id === userId ? room.user2 : room.user1;
+        console.log(`[ROOMMANAGER] Other user in room: ${other.socket.id}`);
         // Notify other side that this room is done (front-end can stop peer connection)
-        other.socket.emit("partner:left", { reason: "room-teardown" });
+        // Removed duplicate notification - handled in UserManager.handleLeave
         this.rooms.delete(roomId);
     }
 
     teardownRoom(roomId: string) {
+        console.log(`[ROOMMANAGER] teardownRoom called for roomId: ${roomId}`);
         const room = this.rooms.get(roomId);
-        if (!room) return;
+        if (!room) {
+          console.log(`[ROOMMANAGER] Room not found for roomId: ${roomId}`);
+          return;
+        }
 
         // Optionally notify both sides (guard if sockets are still connected)
-        try { room.user1.socket.emit("partner:left", { reason: "room-teardown" }); } catch {}
-        try { room.user2.socket.emit("partner:left", { reason: "room-teardown" }); } catch {}
+        // Removed duplicate notifications - handled in UserManager.handleLeave
         this.rooms.delete(roomId);
     }
 
