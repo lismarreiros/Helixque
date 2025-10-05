@@ -5,6 +5,11 @@ title: "[Bug]: "
 labels: ["bug", "hacktoberfest", "pending verification"]
 ---
 
+---
+## Note
+You can now preview the latest updates and improvements every 2–3 days at the following link:
+👉 [Helixque-Changes](https://helixque-changes.netlify.app/)
+---
 
 **Describe the bug**  
 A clear and concise description of what the bug is.
@@ -55,6 +60,4 @@ Add any other context about the problem here.
 >
 > Thank you for helping shape **HelixQue’s future** this **Hacktoberfest 🙌**
 
-## Note
-You can now preview the latest updates and improvements every 2–3 days at the following link:
-👉 [Helixque-Changes](https://helixque-changes.netlify.app/)
+
