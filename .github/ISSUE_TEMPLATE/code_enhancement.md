@@ -39,3 +39,7 @@ Other details, links, or references.
 > - Do **not self-assign issues** — any self-assigned issue will be reviewed, and the final decision will rest with the **Code Owners**.  
 >
 > Thank you for helping shape **HelixQue’s future** this **Hacktoberfest 🙌**
+
+## Note
+You can now preview the latest updates and improvements every 2–3 days at the following link:
+👉 [Helixque-Changes](https://helixque-changes.netlify.app/)
