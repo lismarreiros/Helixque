@@ -1,18 +1,20 @@
 # Security Policy
 
 ## Reporting a Vulnerability
-If you discover a security vulnerability in this project, please open a **private issue** or contact the repository maintainers through GitHub Discussions if available.  
+If you discover a security vulnerability, **please do not open a public issue**.
 
-Please **do not disclose** the vulnerability publicly until it has been investigated and fixed.
+Instead, use GitHub’s **private vulnerability reporting feature** to notify the maintainers securely:  
+👉 [Report a vulnerability](../../security/advisories/new)
+
+If this option is unavailable, you can alternatively describe the issue privately to the maintainer team via GitHub (e.g., through a private message or organization contact).
+
+We appreciate responsible disclosure and will respond as soon as possible.
 
 ## Supported Versions
-Only the latest stable release of this project is supported with security updates.
+Only the latest stable release of this project is supported for security updates.
 
 ## Responsible Disclosure
-We appreciate responsible disclosure.  
 When reporting a vulnerability, please include:
 - Steps to reproduce the issue  
-- Possible impact or affected components  
-- Any suggested fixes or workarounds  
-
-Once verified, we will address the issue as soon as possible.
+- The potential impact  
+- Any suggested fixes or mitigations  
