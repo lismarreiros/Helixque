@@ -52,12 +52,6 @@ export default function DeviceCheck() {
       [localAudioTrack, localVideoTrack].forEach((t) => t?.stop());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // re-init on toggles
-  useEffect(() => {
-    getCam();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoOn, audioOn]);
 
   if (joined) {
