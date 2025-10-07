@@ -99,9 +99,9 @@ export default function Room({
       if (candidate) {
         try {
           await pc.addIceCandidate(candidate);
-          console.log("Processed queued ICE candidate");
+          // console.log("Processed queued ICE candidate");
         } catch (e) {
-          console.error("Error processing queued ICE candidate:", e);
+          // console.error("Error processing queued ICE candidate:", e);
         }
       }
     }
@@ -123,7 +123,7 @@ export default function Room({
           videoTrack = stream.getVideoTracks()[0];
           currentVideoTrackRef.current = videoTrack;
         } catch (err) {
-          console.error("Error creating video track:", err);
+          // console.error("Error creating video track:", err);
           videoTrack = null;
         }
       }
@@ -253,7 +253,7 @@ export default function Room({
                   cameraTrack = cameraStream.getVideoTracks()[0];
                   currentVideoTrackRef.current = cameraTrack;
                 } catch (err: any) {
-                  console.error("Error getting camera after screen share:", err);
+                  // console.error("Error getting camera after screen share:", err);
                   cameraTrack = null;
                 }
               }
@@ -283,7 +283,7 @@ export default function Room({
           };
 
         } catch (error: any) {
-          console.error("Error starting screen share:", error);
+          // console.error("Error starting screen share:", error);
           toast.error("Screen Share Error", {
             description: error?.message || "Failed to start screen sharing"
           });
@@ -318,7 +318,7 @@ export default function Room({
                 await localVideoRef.current.play().catch(() => {});
               }
             } catch (err: any) {
-              console.error("Error getting camera after stopping screen share:", err);
+              // console.error("Error getting camera after stopping screen share:", err);
               toast.error("Camera Error", {
                 description: "Failed to restore camera after stopping screen share"
               });
@@ -342,7 +342,7 @@ export default function Room({
         currentScreenShareTrackRef.current = null;
       }
     } catch (error: any) {
-      console.error("toggleScreenShare error", error);
+      // console.error("toggleScreenShare error", error);
       toast.error("Screen Share Error", {
         description: error?.message || "Failed to toggle screen sharing"
       });
@@ -484,7 +484,7 @@ export default function Room({
           currentVideoTrackRef.current.stop();
           currentVideoTrackRef.current = null;
         } catch (err) {
-          console.error("❌ Error stopping video track:", err);
+          // console.error("❌ Error stopping video track:", err);
         }
       }
       
@@ -496,7 +496,7 @@ export default function Room({
             t.stop();
             ms.removeTrack(t);
           } catch (err) {
-            console.error("❌ Error stopping local preview track:", err);
+            // console.error("❌ Error stopping local preview track:", err);
           }
         }
       }
@@ -652,7 +652,7 @@ export default function Room({
           }
         }
       } catch (e) {
-        console.error("addIceCandidate error", e);
+        // console.error("addIceCandidate error", e);
       }
     });
 

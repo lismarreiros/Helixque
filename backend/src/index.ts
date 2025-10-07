@@ -33,7 +33,7 @@ const HEARTBEAT_MS = Number(process.env.SOCKET_HEARTBEAT_MS || 30_000);
 const heartbeats = new Map<string, ReturnType<typeof setInterval>>();
 
 io.on("connection", (socket: Socket) => {
-  console.log(`[io] connected ${socket.id}`);
+  // console.log(`[io] connected ${socket.id}`);
 
   // Derive meta
   const meta = {
@@ -129,7 +129,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("disconnect", (reason) => {
-    console.log(`[io] disconnected ${socket.id} (${reason})`);
+    // console.log(`[io] disconnected ${socket.id} (${reason})`);
 
     clearInterval(heartbeats.get(socket.id)!);
     heartbeats.delete(socket.id);
