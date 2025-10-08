@@ -706,15 +706,6 @@ export default function Room({
       toast.warning("Partner Left", {
         description: "Your partner has left the call"
       });
-      // Emit a system message to the chat panel
-      try {
-        s.emit("chat:system", {
-          text: "Your partner left the chat.",
-          ts: Date.now()
-        });
-      } catch (e) {
-        console.error("Failed to emit system message for partner left", e);
-      }
       const actualCamState = !!(currentVideoTrackRef.current && currentVideoTrackRef.current.readyState === "live" && camOn);
       const actualMicState = !!(localAudioTrack && localAudioTrack.readyState === "live" && micOn);
       handleNextConnection(actualCamState, actualMicState, "partner-left");
