@@ -223,6 +223,19 @@ export class UserManager {
     this.roomOf.set(id1, roomId);
     this.roomOf.set(id2, roomId);
 
+    // Send system messages to both users when they join the new chat room
+    // Note: This will happen after the frontend receives "send-offer" and calls "chat:join"
+    // We add a small delay to ensure the chat:join has been processed
+    setTimeout(() => {
+      if (this.io && roomId) {
+        const chatRoom = `chat:${roomId}`;
+        this.io.to(chatRoom).emit("chat:system", { 
+          text: "New peer joined the chat", 
+          ts: Date.now() 
+        });
+      }
+    }, 100); // Small delay to ensure chat room is set up
+
     // keep matching others if possible
     this.clearQueue();
   }
@@ -287,10 +300,19 @@ export class UserManager {
       return;
     }
 
-    // Get room ID to send system message
+    // Get room ID to send system message BEFORE teardown
     const roomId = this.roomOf.get(userId);
     
-    // Ban both
+    // Send system message that peer left the chat BEFORE teardown to ensure users are still in the chat room
+    if (roomId && this.io) {
+      const chatRoom = `chat:${roomId}`;
+      this.io.to(chatRoom).emit("chat:system", { 
+        text: "Peer left the chat", 
+        ts: Date.now() 
+      });
+    }
+    
+    // Ban both users from matching with each other again
     const bansU = this.bans.get(userId) || new Set<string>();
     const bansP = this.bans.get(partnerId) || new Set<string>();
     bansU.add(partnerId);
@@ -298,28 +320,8 @@ export class UserManager {
     this.bans.set(userId, bansU);
     this.bans.set(partnerId, bansP);
 
-    // Teardown room links
+    // Teardown room and clear mappings
     if (roomId) this.roomManager.teardownRoom(roomId);
-
-    this.partnerOf.delete(userId);
-    this.partnerOf.delete(partnerId);
-    this.roomOf.delete(userId);
-    this.roomOf.delete(partnerId);
-
-    // Send system message that peer left the chat using the proper server-side approach
-    if (roomId && this.io) {
-      // Send "Peer left the chat" to the chat room using the correct server method
-      // Emit before clearing mappings to ensure users are still in the room
-      const chatRoom = `chat:${roomId}`;
-      this.io.to(chatRoom).emit("chat:system", { 
-        text: "Peer left the chat", 
-        ts: Date.now() 
-      });
-    }
-
-    // Teardown room links
-    if (roomId) this.roomManager.teardownRoom(roomId);
-
     this.partnerOf.delete(userId);
     this.partnerOf.delete(partnerId);
     this.roomOf.delete(userId);
@@ -330,7 +332,7 @@ export class UserManager {
     const partnerUser = this.users.find((u) => u.socket.id === partnerId);
     if (partnerUser && this.online.has(partnerId)) {
       partnerUser.socket.emit("partner:left", { reason: "next" });
-      // Optional: also requeue partner automatically
+      // Also requeue partner automatically
       if (!this.queue.includes(partnerId)) this.queue.push(partnerId);
     }
 
