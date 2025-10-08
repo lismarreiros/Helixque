@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { RoomManager } from "./RoomManager";
 
 const QUEUE_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
@@ -24,8 +24,9 @@ export class UserManager {
   private timeoutIntervals: Map<string, NodeJS.Timeout>;
 
   private roomManager: RoomManager;
+  private io: Server | null = null;
 
-  constructor() {
+  constructor(io?: Server) {
     this.users = [];
     this.queue = [];
     this.roomManager = new RoomManager();
@@ -36,6 +37,15 @@ export class UserManager {
     this.roomOf = new Map();
     this.queueEntryTime = new Map();
     this.timeoutIntervals = new Map();
+    
+    if (io) {
+      this.io = io;
+    }
+  }
+
+  // Method to set the io instance after construction
+  setIo(io: Server) {
+    this.io = io;
   }
 
   // accepts optional meta; safe to call as addUser(name, socket)
@@ -296,18 +306,24 @@ export class UserManager {
     this.roomOf.delete(userId);
     this.roomOf.delete(partnerId);
 
-    // Send system message that peer left the chat
-    if (roomId) {
-      // Send "Peer left the chat" to the chat room
-      this.users.forEach(user => {
-        if ((user.socket.id === userId || user.socket.id === partnerId) && this.roomOf.get(user.socket.id) === roomId) {
-          user.socket.emit("chat:system", { 
-            text: "Peer left the chat", 
-            ts: Date.now() 
-          });
-        }
+    // Send system message that peer left the chat using the proper server-side approach
+    if (roomId && this.io) {
+      // Send "Peer left the chat" to the chat room using the correct server method
+      // Emit before clearing mappings to ensure users are still in the room
+      const chatRoom = `chat:${roomId}`;
+      this.io.to(chatRoom).emit("chat:system", { 
+        text: "Peer left the chat", 
+        ts: Date.now() 
       });
     }
+
+    // Teardown room links
+    if (roomId) this.roomManager.teardownRoom(roomId);
+
+    this.partnerOf.delete(userId);
+    this.partnerOf.delete(partnerId);
+    this.roomOf.delete(userId);
+    this.roomOf.delete(partnerId);
 
     // Requeue caller immediately; notify partner their match ended
     if (!this.queue.includes(userId)) this.queue.push(userId);
