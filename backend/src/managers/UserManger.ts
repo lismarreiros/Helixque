@@ -223,19 +223,6 @@ export class UserManager {
     this.roomOf.set(id1, roomId);
     this.roomOf.set(id2, roomId);
 
-    // Send system messages to both users when they join the new chat room
-    // Note: This will happen after the frontend receives "send-offer" and calls "chat:join"
-    // We add a small delay to ensure the chat:join has been processed
-    setTimeout(() => {
-      if (this.io && roomId) {
-        const chatRoom = `chat:${roomId}`;
-        this.io.to(chatRoom).emit("chat:system", { 
-          text: "New peer joined the chat", 
-          ts: Date.now() 
-        });
-      }
-    }, 100); // Small delay to ensure chat room is set up
-
     // keep matching others if possible
     this.clearQueue();
   }

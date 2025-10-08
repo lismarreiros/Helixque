@@ -37,6 +37,13 @@ export function wireChat(io: Server, socket: Socket) {
   // Allows explicit joins (reconnects/late-joins)
   socket.on("chat:join", async ({ roomId, name }: { roomId: string; name: string }) => {
     await joinChatRoom(socket, roomId, name);
+    
+    // Emit system message to the chat room after the socket has joined
+    const chatRoom = `chat:${roomId}`;
+    io.to(chatRoom).emit("chat:system", { 
+      text: "New peer joined the chat", 
+      ts: Date.now() 
+    });
   });
 
   // Broadcast a message to everyone in the chat room
