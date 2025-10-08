@@ -277,6 +277,9 @@ export class UserManager {
       return;
     }
 
+    // Get room ID to send system message
+    const roomId = this.roomOf.get(userId);
+    
     // Ban both
     const bansU = this.bans.get(userId) || new Set<string>();
     const bansP = this.bans.get(partnerId) || new Set<string>();
@@ -286,13 +289,25 @@ export class UserManager {
     this.bans.set(partnerId, bansP);
 
     // Teardown room links
-    const roomIdU = this.roomOf.get(userId);
-    if (roomIdU) this.roomManager.teardownRoom(roomIdU);
+    if (roomId) this.roomManager.teardownRoom(roomId);
 
     this.partnerOf.delete(userId);
     this.partnerOf.delete(partnerId);
     this.roomOf.delete(userId);
     this.roomOf.delete(partnerId);
+
+    // Send system message that peer left the chat
+    if (roomId) {
+      // Send "Peer left the chat" to the chat room
+      this.users.forEach(user => {
+        if ((user.socket.id === userId || user.socket.id === partnerId) && this.roomOf.get(user.socket.id) === roomId) {
+          user.socket.emit("chat:system", { 
+            text: "Peer left the chat", 
+            ts: Date.now() 
+          });
+        }
+      });
+    }
 
     // Requeue caller immediately; notify partner their match ended
     if (!this.queue.includes(userId)) this.queue.push(userId);

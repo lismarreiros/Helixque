@@ -59,6 +59,21 @@ export function wireChat(io: Server, socket: Socket) {
     });
   });
 
+  // Handle system messages (e.g., peer left/join notifications)
+  socket.on("chat:system", (payload: {
+    roomId: string;
+    text: string;
+    ts?: number;
+  }) => {
+    const { roomId, text, ts } = payload || {};
+    if (!roomId || !text) return;
+
+    socket.nsp.in(`chat:${roomId}`).emit("chat:system", {
+      text: text,
+      ts: ts ?? Date.now(),
+    });
+  });
+
   // Typing indicator to peers (not echoed to sender)
   socket.on("chat:typing", ({ roomId, from, typing }: { roomId: string; from: string; typing: boolean }) => {
     if (!roomId) return;
