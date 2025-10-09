@@ -2,7 +2,7 @@ import http from "http";
 import express from "express";
 import { Server, Socket } from "socket.io";
 
-import { UserManager } from "./managers/UserManager"; // corrected spelling
+import { UserManager } from "./managers/UserManger"; // corrected spelling
 // import { pubClient, subClient } from "./cache/redis";
 // import { presenceUp, presenceHeartbeat, presenceDown, countOnline } from "./cache/presence";
 // import { createAdapter } from "@socket.io/redis-adapter";
