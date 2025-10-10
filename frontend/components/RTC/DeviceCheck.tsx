@@ -24,10 +24,16 @@ export default function DeviceCheck() {
 
   const getCam = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: videoOn,
-        audio: audioOn,
-      });
+      if (!videoOn && !audioOn) {
+      if (videoRef.current) videoRef.current.srcObject = null;
+      setLocalAudioTrack(null);
+      setLocalVideoTrack(null);
+      return;
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: videoOn,
+      audio: audioOn,
+    });
       const audioTrack = stream.getAudioTracks()[0] || null;
       const videoTrack = stream.getVideoTracks()[0] || null;
       setLocalAudioTrack(audioTrack);
@@ -44,16 +50,31 @@ export default function DeviceCheck() {
       });
     }
   };
-
-  useEffect(() => {
-    getCam();
-    // cleanup: stop tracks on unmount
-    return () => {
-      [localAudioTrack, localVideoTrack].forEach((t) => t?.stop());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoOn, audioOn]);
-
+ useEffect(() => {
+  let permissionStatus: PermissionStatus | null = null;
+  async function watchCameraPermission() {
+    try {
+      permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
+      // when user changes permission
+      permissionStatus.onchange = () => {
+        if (permissionStatus?.state === "granted") {
+          console.log("Camera permission granted — restarting video...");
+          getCam(); // call your existing camera function
+        }
+      };
+    } catch (e) {
+      console.warn("Permissions API not supported on this browser.");
+    }
+  }
+  watchCameraPermission();
+  getCam(); // Try starting camera once on mount
+  // Cleanup: stop tracks + remove listener
+  return () => {
+    if (permissionStatus) permissionStatus.onchange = null;
+    [localAudioTrack, localVideoTrack].forEach((t) => t?.stop());
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [videoOn, audioOn]);
   if (joined) {
 
     const handleOnLeave = () => {
