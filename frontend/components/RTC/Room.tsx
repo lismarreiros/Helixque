@@ -697,10 +697,8 @@ export default function Room({
         id: "partner-left-toast-" + Date.now(), // Unique ID to prevent duplicates
         description: "Your partner has left the call"
       });
-      
       const actualCamState = !!(currentVideoTrackRef.current && currentVideoTrackRef.current.readyState === "live" && camOn);
       const actualMicState = !!(localAudioTrack && localAudioTrack.readyState === "live" && micOn);
-      
       handleNextConnection(actualCamState, actualMicState, "partner-left");
     });
 
