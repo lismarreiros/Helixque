@@ -9,6 +9,8 @@ import { UserManager } from "./managers/UserManger"; // corrected spelling
 
 import { wireChat /*, joinChatRoom */ } from "./chat/chat"; // keep wiring util
 
+import type { HandshakeAuth, HandshakeQuery, ChatJoinPayload } from "./type";
+
 const app = express();
 const server = http.createServer(app);
 
@@ -36,7 +38,7 @@ io.on("connection", (socket: Socket) => {
 
   // Derive meta
   const meta = {
-    name: (socket.handshake.auth && (socket.handshake.auth as any).name) || "guest",
+    name: (socket.handshake.auth as HandshakeAuth)?.name || "guest",
     ip: socket.handshake.address || null,
     ua: (socket.handshake.headers["user-agent"] as string) || null,
   };
@@ -57,8 +59,8 @@ io.on("connection", (socket: Socket) => {
 
   // Auto-join a chat room if the client provided it (supports auth or query)
   // Normalize to using `chat:<roomId>` as the room namespace everywhere
-  const roomFromAuth = socket.handshake.auth && (socket.handshake.auth as any).roomId;
-  const roomFromQuery = socket.handshake.query && (socket.handshake.query as any).roomId;
+  const roomFromAuth = (socket.handshake.auth as HandshakeAuth)?.roomId;
+  const roomFromQuery = (socket.handshake.query as HandshakeQuery)?.roomId;
   const initialRoomRaw = (roomFromAuth || roomFromQuery || "").toString().trim();
   const normalizeRoom = (r: string) => (r ? `chat:${r}` : "");
 
@@ -70,7 +72,7 @@ io.on("connection", (socket: Socket) => {
   }
 
   // Keep UserManager in sync when client explicitly joins later
-  socket.on("chat:join", ({ roomId }: { roomId: string; name?: string }) => {
+  socket.on("chat:join", ({ roomId }: ChatJoinPayload) => {
     try {
       if (!roomId || typeof roomId !== "string") return;
       const namespaced = normalizeRoom(roomId.trim());
