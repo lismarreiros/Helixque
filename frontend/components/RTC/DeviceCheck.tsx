@@ -26,35 +26,46 @@ const localVideoTrackRef = useRef<MediaStreamTrack | null>(null);
 const getCamRef = useRef<() => Promise<void>>(() => Promise.resolve());
 
   const getCam = async () => {
-    try {
-      if (!videoOn && !audioOn) {
+ try {
       localAudioTrackRef.current?.stop();
       localVideoTrackRef.current?.stop();
-      localAudioTrackRef.current = null;
-      localVideoTrackRef.current = null;
-      if (videoRef.current) videoRef.current.srcObject = null;
-      setLocalAudioTrack(null);
-      setLocalVideoTrack(null);
-      return;
-    }
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: videoOn,
-      audio: audioOn,
-    });
-      const audioTrack = stream.getAudioTracks()[0] || null;
-      const videoTrack = stream.getVideoTracks()[0] || null;
-      localAudioTrackRef.current?.stop();
-     localVideoTrackRef.current?.stop();
-
-     localAudioTrackRef.current = audioTrack;
-     localVideoTrackRef.current = videoTrack;
-      setLocalAudioTrack(audioTrack);
+      let videoTrack: MediaStreamTrack | null = null;
+      let audioTrack: MediaStreamTrack | null = null;
+      // request camera stream only if videoOn is true
+      if (videoOn) {
+        try {
+          const videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+          videoTrack = videoStream.getVideoTracks()[0] || null;
+        } catch (err) {
+          console.warn("Camera access denied or unavailable:", err);
+          toast.error("Camera Error", { description: "Could not access camera" });
+        }
+      }
+      //  Request microphone stream only if audioOn is true
+      if (audioOn) {
+        try {
+          const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          audioTrack = audioStream.getAudioTracks()[0] || null;
+        } catch (err) {
+          console.warn("Microphone access denied or unavailable:", err);
+          toast.error("Microphone Error", { description: "Could not access microphone" });
+        }
+      }
+      //  Save tracks to refs & state
+      localVideoTrackRef.current = videoTrack;
+      localAudioTrackRef.current = audioTrack;
       setLocalVideoTrack(videoTrack);
-
+      setLocalAudioTrack(audioTrack);
+      //  Attach video stream if available
       if (videoRef.current) {
         videoRef.current.srcObject = videoTrack ? new MediaStream([videoTrack]) : null;
         if (videoTrack) await videoRef.current.play().catch(() => {});
       }
+      // Clear stream if both are off
+      if (!videoOn && !audioOn && videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+
     } catch (e: any) {
       const errorMessage = e?.message || "Could not access camera/microphone";
       toast.error("Device Access Error", {
@@ -90,7 +101,6 @@ useEffect(() => {
   getCamRef.current = getCam;
 });
   if (joined) {
-
     const handleOnLeave = () => {
       setJoined(false);
       try {
