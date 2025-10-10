@@ -21,10 +21,15 @@ export default function DeviceCheck() {
   const [audioOn, setAudioOn] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-
+const localAudioTrackRef = useRef<MediaStreamTrack | null>(null);
+const localVideoTrackRef = useRef<MediaStreamTrack | null>(null);
   const getCam = async () => {
     try {
       if (!videoOn && !audioOn) {
+      localAudioTrackRef.current?.stop();
+      localVideoTrackRef.current?.stop();
+      localAudioTrackRef.current = null;
+      localVideoTrackRef.current = null;
       if (videoRef.current) videoRef.current.srcObject = null;
       setLocalAudioTrack(null);
       setLocalVideoTrack(null);
@@ -36,6 +41,11 @@ export default function DeviceCheck() {
     });
       const audioTrack = stream.getAudioTracks()[0] || null;
       const videoTrack = stream.getVideoTracks()[0] || null;
+      localAudioTrackRef.current?.stop();
+     localVideoTrackRef.current?.stop();
+
+     localAudioTrackRef.current = audioTrack;
+     localVideoTrackRef.current = videoTrack;
       setLocalAudioTrack(audioTrack);
       setLocalVideoTrack(videoTrack);
 
@@ -51,30 +61,31 @@ export default function DeviceCheck() {
     }
   };
  useEffect(() => {
-  let permissionStatus: PermissionStatus | null = null;
-  async function watchCameraPermission() {
-    try {
-      permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
-      // when user changes permission
-      permissionStatus.onchange = () => {
-        if (permissionStatus?.state === "granted") {
-          console.log("Camera permission granted — restarting video...");
-          getCam(); // call your existing camera function
-        }
-      };
-    } catch (e) {
-      console.warn("Permissions API not supported on this browser.");
-    }
-  }
-  watchCameraPermission();
-  getCam(); // Try starting camera once on mount
-  // Cleanup: stop tracks + remove listener
-  return () => {
-    if (permissionStatus) permissionStatus.onchange = null;
-    [localAudioTrack, localVideoTrack].forEach((t) => t?.stop());
-  };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [videoOn, audioOn]);
+   let permissionStatus: PermissionStatus | null = null;
+   async function watchCameraPermission() {
+     try {
+       permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
+       permissionStatus.onchange = () => {
+         if (permissionStatus?.state === "granted") {
+           getCam();
+         }
+       };
+     } catch (e) {
+       console.warn("Permissions API not supported on this browser.");
+     }
+   }
+   watchCameraPermission();
+   getCam();
+   return () => {
+     if (permissionStatus) permissionStatus.onchange = null;
+     localAudioTrackRef.current?.stop();
+     localVideoTrackRef.current?.stop();
+   };
+ }, []); 
+ useEffect(() => {
+   getCam();
+ }, [videoOn, audioOn]);
+
   if (joined) {
 
     const handleOnLeave = () => {
