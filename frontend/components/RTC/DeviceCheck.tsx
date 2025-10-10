@@ -23,6 +23,8 @@ export default function DeviceCheck() {
   const videoRef = useRef<HTMLVideoElement>(null);
 const localAudioTrackRef = useRef<MediaStreamTrack | null>(null);
 const localVideoTrackRef = useRef<MediaStreamTrack | null>(null);
+const getCamRef = useRef<() => Promise<void>>(() => Promise.resolve());
+
   const getCam = async () => {
     try {
       if (!videoOn && !audioOn) {
@@ -65,17 +67,16 @@ const localVideoTrackRef = useRef<MediaStreamTrack | null>(null);
    async function watchCameraPermission() {
      try {
        permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
-       permissionStatus.onchange = () => {
-         if (permissionStatus?.state === "granted") {
-           getCam();
-         }
-       };
+      permissionStatus.onchange = () => {
+       if (permissionStatus?.state === "granted") {
+          getCamRef.current();
+        }
+      };
      } catch (e) {
        console.warn("Permissions API not supported on this browser.");
      }
    }
    watchCameraPermission();
-   getCam();
    return () => {
      if (permissionStatus) permissionStatus.onchange = null;
      localAudioTrackRef.current?.stop();
@@ -85,7 +86,9 @@ const localVideoTrackRef = useRef<MediaStreamTrack | null>(null);
  useEffect(() => {
    getCam();
  }, [videoOn, audioOn]);
-
+useEffect(() => {
+  getCamRef.current = getCam;
+});
   if (joined) {
 
     const handleOnLeave = () => {
