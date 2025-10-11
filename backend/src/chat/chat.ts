@@ -25,7 +25,7 @@ export async function joinChatRoom(socket: Socket, roomId: string, name: string)
       const peers = await socket.nsp.in(room).fetchSockets();
       for (const peer of peers) {
         if (peer.id === socket.id) continue; // skip self
-        const peerName = (peer as any).data?.chatNames?.[room] ?? "A user";
+        const peerName = (peer as any).data?.chatNames?.[room] || "A user"; // Changed from ?? to || for better compatibility
         socket.emit("chat:system", { text: `${peerName} joined the chat`, ts: Date.now() });
       }
     } catch {}
@@ -47,14 +47,14 @@ export function wireChat(io: Server, socket: Socket) {
   // Broadcast a message to everyone in the chat room
   socket.on("chat:message", (payload: ChatMessagePayload) => {
     const { roomId, text, from, clientId, ts } = payload || {};
-    const safeText = (text ?? "").toString().trim().slice(0, 1000);
+    const safeText = (text || "").toString().trim().slice(0, 1000); // Changed from ?? to || for better compatibility
     if (!roomId || !safeText) return;
 
     socket.nsp.in(`chat:${roomId}`).emit("chat:message", {
       text: safeText,
       from,
       clientId,
-      ts: ts ?? Date.now(),
+      ts: ts || Date.now(), // Changed from ?? to || for better compatibility
     });
   });
 
@@ -81,7 +81,7 @@ export function wireChat(io: Server, socket: Socket) {
     const data = (socket.data as SocketData) || {};
     for (const room of socket.rooms) {
       if (typeof room === "string" && room.startsWith("chat:")) {
-        const displayName = data.chatNames?.[room] ?? "A user";
+        const displayName = data.chatNames?.[room] || "A user"; // Changed from ?? to || for better compatibility
         socket.nsp.in(room).emit("chat:system", { text: `${displayName} left the chat`, ts: Date.now() });
       }
     }

@@ -110,7 +110,6 @@ export class UserManager {
   }
 
   private startQueueTimeout(socketId: string) {
-    console.log(`[TIMEOUT] Starting timeout for socket: ${socketId}, timeout: ${QUEUE_TIMEOUT_MS}ms`);
     this.clearQueueTimeout(socketId);
 
     this.queueEntryTime.set(socketId, Date.now());
@@ -132,26 +131,18 @@ export class UserManager {
   }
 
   private handleQueueTimeout(socketId: string) {
-    console.log(`[TIMEOUT] Handling timeout for socket: ${socketId}`);
     const user = this.users.find(u => u.socket.id === socketId);
     if (!user || !this.online.has(socketId) || !this.queue.includes(socketId)) {
-      console.log(`[TIMEOUT] User not found, offline, or not in queue:`, {
-        user: !!user,
-        online: this.online.has(socketId),
-        inQueue: this.queue.includes(socketId)
-      });
       return;
     }
 
-    console.log(`[TIMEOUT] Emitting timeout event to user: ${socketId}`);
     try {
       user.socket.emit("queue:timeout", {
         message: "We couldn't find a match right now. Please try again later.",
         waitTime: Date.now() - (this.queueEntryTime.get(socketId) || Date.now())
       });
-      console.log(`[TIMEOUT] Successfully emitted timeout event`);
     } catch (error) {
-      console.error("Failed to emit queue:timeout:", error);
+      // console.error("Failed to emit queue:timeout:", error);
     }
 
     this.queue = this.queue.filter(id => id !== socketId);
@@ -161,8 +152,6 @@ export class UserManager {
   // ---------- MATCHING / QUEUE (your logic kept intact) ----------
 
   clearQueue() {
-    console.log("inside clear queues");
-    console.log(this.queue.length);
     if (this.queue.length < 2) {
       return;
     }
@@ -194,13 +183,9 @@ export class UserManager {
       return; // no valid pair right now
     }
 
-    console.log("id is " + id1 + " " + id2);
-
     const user1 = this.users.find((x) => x.socket.id === id1);
     const user2 = this.users.find((x) => x.socket.id === id2);
     if (!user1 || !user2) return;
-
-    console.log("creating roonm");
 
     // remove both from queue for pairing
     this.queue = this.queue.filter((x) => x !== id1 && x !== id2);
