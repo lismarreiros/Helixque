@@ -117,7 +117,7 @@ export default function ChatPanel({
             const who = (match[1] || "").trim();
             const action = match[2];
             const isSelf = who.length > 0 && who.toLowerCase() === (name || "").toLowerCase();
-            return `${isSelf ? name : "peer"} ${action} the chat`;
+            return `${isSelf ? name : "Peer"} ${action} the chat`;
           }
         } catch {}
         return txt;

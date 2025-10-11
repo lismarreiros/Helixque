@@ -568,7 +568,6 @@ export default function Room({
     // ----- CALLER -----
     s.on("send-offer", async ({ roomId: rid }) => {
       setRoomId(rid);
-      s.emit("chat:join", { roomId: rid, name });
       setLobby(false);
       setStatus("Connecting…");
       
@@ -578,6 +577,10 @@ export default function Room({
           id: "connected-toast-" + rid, // Unique ID per room
           description: "You've been connected to someone"
         });
+        // Emit chat join after a small delay to ensure listeners are attached
+        setTimeout(() => {
+          s.emit("chat:join", { roomId: rid, name });
+        }, 100);
       }, 100);
 
       const pc = new RTCPeerConnection();
@@ -594,7 +597,6 @@ export default function Room({
     // ----- ANSWERER -----
     s.on("offer", async ({ roomId: rid, sdp: remoteSdp }) => {
       setRoomId(rid);
-      s.emit("chat:join", { roomId: rid, name });
       setLobby(false);
       setStatus("Connecting…");
       
@@ -604,6 +606,10 @@ export default function Room({
           id: "connected-toast-" + rid, // Unique ID per room
           description: "You've been connected to someone"
         });
+        // Emit chat join after a small delay to ensure listeners are attached
+        setTimeout(() => {
+          s.emit("chat:join", { roomId: rid, name });
+        }, 100);
       }, 100);
 
       const pc = new RTCPeerConnection();
