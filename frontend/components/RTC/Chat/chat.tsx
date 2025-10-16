@@ -117,7 +117,7 @@ export default function ChatPanel({
             const who = (match[1] || "").trim();
             const action = match[2];
             const isSelf = who.length > 0 && who.toLowerCase() === (name || "").toLowerCase();
-            return `${isSelf ? name : "peer"} ${action} the chat`;
+            return `${isSelf ? name : "Peer"} ${action} the chat`;
           }
         } catch {}
         return txt;
@@ -144,15 +144,18 @@ export default function ChatPanel({
       }
     };
 
- //   const onPartnerLeft = ({ reason }: { reason: string }) => {
-  //    onSystem({ text: `Your partner left (${reason}).` });
-  //  };
+
+    // Handler for when partner leaves the chat
+    // const onPartnerLeft = ({ reason }: { reason: string }) => {
+    //   console.log("👋 PARTNER LEFT - Chat event received with reason:", reason);
+    //   onSystem({ text: `Your partner left (${reason}).` });
+    // };
 
     socket.on("connect", onConnect);
     socket.on("chat:message", onMsg);
     socket.on("chat:system", onSystem);
     socket.on("chat:typing", onTyping);
- //   socket.on("partner:left", onPartnerLeft);
+    // socket.on("partner:left", onPartnerLeft);
 
     // clear chat when switching rooms BEFORE join to avoid wiping fresh system events
     setMessages([]);
@@ -165,7 +168,7 @@ export default function ChatPanel({
       socket.off("chat:message", onMsg);
       socket.off("chat:system", onSystem);
       socket.off("chat:typing", onTyping);
- //     socket.off("partner:left", onPartnerLeft);
+      // socket.off("partner:left", onPartnerLeft);
       // stop typing when leaving room/unmounting
       socket.emit("chat:typing", { roomId, from: name, typing: false });
       // announce leaving the chat room
