@@ -99,9 +99,9 @@ export default function ChatPanel({
         try {
           // Only show toast if chat window is closed
           if (!isOpen) {
-            // subtle toast at bottom-right when receiving a new message
+            // Hide actual username in notification for privacy - always show "Peer"
             toast.success(
-              `${m.from}: ${m.text.length > 80 ? m.text.slice(0, 77) + '...' : m.text}`,
+              `Peer: ${m.text.length > 80 ? m.text.slice(0, 77) + '...' : m.text}`,
               { 
                 duration: 3500,
                 position: 'bottom-right',
