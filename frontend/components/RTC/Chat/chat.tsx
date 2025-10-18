@@ -2,8 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
 import { toast } from "sonner";
-import type {EmojiClickData} from "emoji-picker-react"
-import EmojiPicker , {Theme} from "emoji-picker-react";
+import type { EmojiClickData} from "emoji-picker-react"
+import EmojiPicker, {Theme} from "emoji-picker-react";
 import { RiEmojiStickerLine } from 'react-icons/ri'
 
 type ChatMessage = {
@@ -44,22 +44,27 @@ export default function ChatPanel({
   const inputRef=useRef<HTMLInputElement>(null)
   const [emojiPickerOpen, setEmojiPickerOpen] = useState<boolean>(false);
   const [cursorPosition, setCursorPosition] = useState<number>(0);
-  
-
-
-  // closes emoji picker if clicked outside
-      useEffect(()=>{
-        function handleClickOutside(event:MouseEvent){
-            if(emojiRef.current && !emojiRef.current.contains(event.target as Node)){
-                    setEmojiPickerOpen(false);
-            }
-        }
-        document.addEventListener("mousedown",handleClickOutside);
-        return ()=>{
-            document.removeEventListener("mousedown",handleClickOutside)         
-        }
-    },[])
   const didJoinRef = useRef<Record<string, string>>({});
+
+    useEffect(()=>{
+  function handleClickOutside(event:MouseEvent){
+    if(emojiRef.current && !emojiRef.current.contains(event.target as Node)){
+      // Only proceed if the picker is currently open
+      if(emojiPickerOpen) {
+        setEmojiPickerOpen(false);
+        setTimeout(() => {
+          if(inputRef.current){
+            inputRef.current.focus();
+          }
+        }, 5);
+      }
+    }
+  }
+  document.addEventListener("mousedown",handleClickOutside);
+  return ()=>{
+    document.removeEventListener("mousedown",handleClickOutside)         
+  }
+}, [emojiPickerOpen]); // Add dependency here
 
   // derive & keep socket.id fresh for self-dedupe
   useEffect(() => {
@@ -76,10 +81,6 @@ export default function ChatPanel({
 
   const canSend = !!socket && socket.connected && !!roomId && !!name && !!(sidRef.current || mySocketId);
   
- 
-  
- 
-
   // Dismiss existing toasts when chat window opens
   useEffect(() => {
     if (isOpen) {
@@ -251,9 +252,8 @@ export default function ChatPanel({
   };
 
   const handleAddEmoji=(emoji:EmojiClickData)=>{
-       const start = cursorPosition;
-       const end = cursorPosition;
-       const newMsg = input.slice(0, start) + emoji.emoji + input.slice(end);
+       const start = cursorPosition;  
+       const newMsg = input.slice(0, start) + emoji.emoji + input.slice(start);
        setInput(newMsg);
        
        const newCursorPos = start + emoji.emoji.length;
@@ -335,10 +335,9 @@ export default function ChatPanel({
             }}
             disabled={!canSend}
             maxLength={MAX_LEN}
-
           /> 
          <div className="absolute right-2 bottom-0 ">
-          <button onClick={()=>{if(canSend)setEmojiPickerOpen(true)}} className={`${canSend ? ' hover:text-white focus:text-white ' : '' } text-neutral-500 focus:border-none focus:outline-none duration-300 transition-all`} aria-label="Open emoji picker">
+          <button onClick={(e)=>{e.stopPropagation();if(canSend)setEmojiPickerOpen(true)}} className={`${canSend ? ' hover:text-white focus:text-white ' : '' } text-neutral-500 focus:border-none focus:outline-none duration-300 transition-all`} aria-label="Open emoji picker">
             <RiEmojiStickerLine size={24}/>
           </button>
           <div className='absolute bottom-16 right-0' ref={emojiRef}>
@@ -358,5 +357,3 @@ export default function ChatPanel({
     </div>
   );
 }
-
-
