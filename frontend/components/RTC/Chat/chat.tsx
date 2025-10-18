@@ -73,8 +73,8 @@ export default function ChatPanel({
     };
   }, [socket]);
 
-  // const canSend = !!socket && socket.connected && !!roomId && !!name && !!(sidRef.current || mySocketId);
-  const canSend=true
+  const canSend = !!socket && socket.connected && !!roomId && !!name && !!(sidRef.current || mySocketId);
+  
  
   
  
