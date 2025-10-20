@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Room from "./Room";
 import { toast } from "sonner";
 import { 
@@ -19,18 +19,29 @@ export default function DeviceCheck() {
   const [joined, setJoined] = useState(false);
   const [videoOn, setVideoOn] = useState(true);
   const [audioOn, setAudioOn] = useState(true);
+  const [avatar, setAvatar] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-const localAudioTrackRef = useRef<MediaStreamTrack | null>(null);
-const localVideoTrackRef = useRef<MediaStreamTrack | null>(null);
-const getCamRef = useRef<() => Promise<void>>(() => Promise.resolve());
+  const localAudioTrackRef = useRef<MediaStreamTrack | null>(null);
+  const localVideoTrackRef = useRef<MediaStreamTrack | null>(null);
+  const getCamRef = useRef<() => Promise<void>>(() => Promise.resolve());
+
+  // Handle avatar upload
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = e => setAvatar(e.target?.result as string);
+    reader.readAsDataURL(file);
+  };
 
   const getCam = async () => {
- try {
+    try {
       localAudioTrackRef.current?.stop();
       localVideoTrackRef.current?.stop();
       let videoTrack: MediaStreamTrack | null = null;
       let audioTrack: MediaStreamTrack | null = null;
+      
       // request camera stream only if videoOn is true
       if (videoOn) {
         try {
@@ -56,6 +67,7 @@ const getCamRef = useRef<() => Promise<void>>(() => Promise.resolve());
       localAudioTrackRef.current = audioTrack;
       setLocalVideoTrack(videoTrack);
       setLocalAudioTrack(audioTrack);
+      
       //  Attach video stream if available
       if (videoRef.current) {
         videoRef.current.srcObject = videoTrack ? new MediaStream([videoTrack]) : null;
@@ -73,33 +85,37 @@ const getCamRef = useRef<() => Promise<void>>(() => Promise.resolve());
       });
     }
   };
- useEffect(() => {
-   let permissionStatus: PermissionStatus | null = null;
-   async function watchCameraPermission() {
-     try {
-       permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
-      permissionStatus.onchange = () => {
-       if (permissionStatus?.state === "granted") {
-          getCamRef.current();
-        }
-      };
-     } catch (e) {
+  
+  useEffect(() => {
+    let permissionStatus: PermissionStatus | null = null;
+    async function watchCameraPermission() {
+      try {
+        permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
+        permissionStatus.onchange = () => {
+          if (permissionStatus?.state === "granted") {
+            getCamRef.current();
+          }
+        };
+      } catch (e) {
        console.warn("Permissions API not supported on this browser.");
      }
    }
    watchCameraPermission();
-   return () => {
-     if (permissionStatus) permissionStatus.onchange = null;
-     localAudioTrackRef.current?.stop();
-     localVideoTrackRef.current?.stop();
-   };
- }, []); 
- useEffect(() => {
-   getCam();
- }, [videoOn, audioOn]);
-useEffect(() => {
-  getCamRef.current = getCam;
-});
+    return () => {
+      if (permissionStatus) permissionStatus.onchange = null;
+      localAudioTrackRef.current?.stop();
+      localVideoTrackRef.current?.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    getCam();
+  }, [videoOn, audioOn]);
+  
+  useEffect(() => {
+    getCamRef.current = getCam;
+  });
+  
   if (joined) {
     const handleOnLeave = () => {
       setJoined(false);
@@ -152,11 +168,27 @@ useEffect(() => {
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black">
+                    {avatar ? (
+                      <img 
+                      src={avatar}
+                      alt="Avatar"
+                      className="h-24 w-24 rounded-full object-cover border border-white/20"
+                      />
+                    ) : (
                     <IconUser className="h-16 w-16 text-white/70" />
-                  </div>
-                )}
-                
+                  )}
+                  <label className="cursor-pointer bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1 rounded-md transition">
+                    {avatar ? "Change Avatar" : "Upload Avatar"}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleAvatarChange} 
+                      className="hidden" 
+                    />
+                    </label>
+                    </div>
+                  )}
                 {/* Status indicators */}
                 <div className="absolute bottom-3 left-3 flex items-center gap-2">
                   <div className="rounded-md bg-black/60 px-2 py-1 text-xs text-white">
