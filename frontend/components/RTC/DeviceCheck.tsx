@@ -30,9 +30,23 @@ export default function DeviceCheck() {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = e => setAvatar(e.target?.result as string);
-    reader.readAsDataURL(file);
+    const allowed = new Set(["image/png", "image/jpeg", "image/webp", "image/gif"]);
+    const MAX_MB = 5;
+    if (!allowed.has(file.type)) {
+      toast.error("Unsupported file type", { description: "Use PNG, JPEG, WebP or GIF." });
+        e.currentTarget.value = "";
+        return;
+      }
+    if (file.size > MAX_MB * 1024 * 1024) {
+      toast.error("File too large", { description: `Max size is ${MAX_MB}MB.` });
+      e.currentTarget.value = "";
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setAvatar(prev => {
+      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
+      return url;
+    });
   };
 
   const getCam = async () => {
@@ -183,7 +197,7 @@ export default function DeviceCheck() {
                     {avatar ? "Change Avatar" : "Upload Avatar"}
                     <input 
                       type="file" 
-                      accept="image/*" 
+                      accept="image/png,image/jpeg,image/webp,image/gif" 
                       onChange={handleAvatarChange} 
                       className="hidden" 
                     />
