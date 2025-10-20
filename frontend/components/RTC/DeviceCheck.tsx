@@ -129,6 +129,14 @@ export default function DeviceCheck() {
   useEffect(() => {
     getCamRef.current = getCam;
   });
+
+  useEffect(() => {
+    return () => {
+      if (avatar?.startsWith("blob:")) {
+      URL.revokeObjectURL(avatar);
+      }
+    };
+  }, [avatar]);
   
   if (joined) {
     const handleOnLeave = () => {

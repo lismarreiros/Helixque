@@ -65,11 +65,13 @@ export default function VideoGrid({
                 className="absolute inset-0 h-full w-full object-cover"
               />
             ) : avatar ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-black"> 
               <img
                 src={avatar}
                 alt="Avatar"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="h-24 w-24 rounded-full object-cover"
               />
+              </div>
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-black">
                 <IconUser className="h-8 w-8 text-white/70" />
@@ -201,7 +203,7 @@ export default function VideoGrid({
               <img
                 src={avatar}
                 alt="Avatar"
-                className="h-30 w-30 rounded-full object-cover"
+                className="h-24 w-24 rounded-full object-cover"
               />
               </div>
             ) : (
