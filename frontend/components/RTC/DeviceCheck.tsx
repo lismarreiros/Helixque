@@ -136,6 +136,7 @@ export default function DeviceCheck() {
         localVideoTrack={localVideoTrack}
         audioOn={audioOn}
         videoOn={videoOn}
+        avatar={avatar}
         onLeave={handleOnLeave}
       />
     );

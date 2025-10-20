@@ -26,6 +26,7 @@ interface RoomProps {
   audioOn?: boolean;
   videoOn?: boolean;
   onLeave?: () => void;
+  avatar?: string | null;
 }
 
 export default function Room({
@@ -35,6 +36,7 @@ export default function Room({
   audioOn,
   videoOn,
   onLeave,
+  avatar
 }: RoomProps) {
   const router = useRouter();
 
@@ -762,6 +764,7 @@ export default function Room({
             name={name}
             mediaState={mediaState}
             peerState={peerState}
+            avatar={avatar}
           />
 
           {/* Hidden remote audio */}
